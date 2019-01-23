@@ -1,0 +1,107 @@
+from pgmpy.models import BayesianModel
+from pgmpy.factors.discrete import TabularCPD
+from pgmpy.inference import ExactInference
+from Bayesian_V1 import parameter_generation
+from pgmpy.inference import VariableElimination
+from Bayesian_V1 import define_variables as df
+from Bayesian_V1 import define_CNF as df_CNF
+from Bayesian_V1 import  write_cnf as writefile
+
+from pgmpy.readwrite import BIFReader
+# read a file?
+reader = BIFReader('/Users/tianyangsun/Documents/Project/txs799/bifs/earthquake.bif')
+earthquake_model = reader.get_model()
+
+
+debug = False
+# represent a simple bayesian network and store it as simple_example
+# if A -> B, do ['A', 'B']
+nodes = ['A', 'B', 'C'] # store the nodes in a list
+simple_example = BayesianModel()
+simple_example.add_nodes_from(nodes)
+
+simple_example = BayesianModel([('A', 'B'),
+                                ('B', 'C'),
+                                ('A', 'C')])
+
+# define individual
+cpd_A = TabularCPD(variable = 'A', variable_card = 2, values = [[0.1, 0.9]])
+# define the ones with evidence
+# as explained in the pgmpy library, this matrix is transformed actually
+cpd_B = TabularCPD(variable = 'B', variable_card = 2,
+                   values = [[0.1, 0.2],
+                             [0.9, 0.8]],
+                   evidence = ['A'],
+                   evidence_card = [2])
+
+cpd_C = TabularCPD(variable = 'C', variable_card = 3,
+                   values = [[0.1, 0.01, 0.05 , 0.5],
+                             [0.2, 0.09, 0.5, 0],
+                             [0.7, 0.9, 0.45, 0.5]],
+                   evidence = ['A', 'B'],
+                   evidence_card =[2, 2])
+
+# associate the tables with the networks
+simple_example.add_cpds(cpd_A, cpd_B, cpd_C)
+
+
+
+
+
+cancer_model = BayesianModel([('Pollution', 'Cancer'),
+                              ('Smoker', 'Cancer'),
+                              ('Cancer', 'Xray'),
+                              ('Cancer', 'Dyspnoea')])
+cpd_poll = TabularCPD(variable='Pollution', variable_card=2,
+                      values=[[0.9], [0.1]])
+cpd_smoke = TabularCPD(variable='Smoker', variable_card=2,
+                       values=[[0.3], [0.7]])
+cpd_cancer = TabularCPD(variable='Cancer', variable_card=2,
+                        values=[[0.03, 0.05, 0.001, 0.02],
+                                [0.97, 0.95, 0.999, 0.98]],
+                        evidence=['Smoker', 'Pollution'],
+                        evidence_card=[2, 2])
+cpd_xray = TabularCPD(variable='Xray', variable_card=2,
+                      values=[[0.9, 0.2], [0.1, 0.8]],
+                      evidence=['Cancer'], evidence_card=[2])
+cpd_dysp = TabularCPD(variable='Dyspnoea', variable_card=2,
+                      values=[[0.65, 0.3], [0.35, 0.7]],
+                      evidence=['Cancer'], evidence_card=[2])
+cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
+
+#print (simple_example.check_model())
+# check the models
+def encode(bn):
+
+    df.generate_variable(bn)
+    df_CNF.enc1_indicator_clauses(bn)
+    df_CNF.enc1_parameter_clauses()
+    df_CNF.write_indicator_clause()
+
+    writefile.write_no_weight(df_CNF.write_file)
+
+    if (debug):
+        print("These are parameter variables")
+        print(df.parameter_variable_n)
+        print(df.parameter_variable_v)
+        print("parameter to value")
+        print(df.parameter_to_value)
+
+        print("These are indicator variables")
+        print(df.indicator_variable_n)
+        print(df.indicator_variable_v)
+
+
+
+#encode(simple_example)
+encode(earthquake_model)
+
+
+#print(simple_example.get_cpds('C'))
+#print(simple_example.get_cpds('C').values[1][0][1]) #variable, evidence1, evidence
+
+#enc1_indicator_clauses()
+
+#print (df.indicator_index)
+#print(simple_example.nodes)
+
