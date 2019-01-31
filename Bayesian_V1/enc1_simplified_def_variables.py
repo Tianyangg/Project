@@ -64,7 +64,6 @@ def generate_variable(bn):
                 variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
 
             indicator_variable_n.append('lambda_' + i + '1')
-            #indicator_variable_n.append('lambda_' + i + '1')
             indicator_tuple.add((i, 1))
             indicator_variable_v.append(False)
 

@@ -7,13 +7,22 @@ debug = False
 indicator_clauses = [[]] # stote the indicator name
 indicator_clauses_s = [[]] # store the sign of the indicator clauses
 indicator_single_clauses =[[]]
+
+# update: generate indicator clauses then parameter clauses
 def enc1_indicator_clauses(bn):
+
 
     ctr = 0 # control index in indicator_variable_n
     index = 0 # NOTE: explain this!!!!
     for i in bn.nodes:    # [A, B, C]
         result = [x[1] for x  in df_v.indicator_index if x[0] == i ]
 
+        # Cardinality == 2 and no evidence: skip this
+
+
+        # Cardinality == 2 and with evidence: skip the indicator clauses, generate parameter clauses
+
+        # Cardinality (node) > 2
         if result[0]!= 2:
             # step 1, the positive clauses
             for j in range(0, result[0]):

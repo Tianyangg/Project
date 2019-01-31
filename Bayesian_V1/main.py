@@ -106,18 +106,14 @@ def enc1_simplified(bn):
 #encode(simple_example)
 #enc1_simplified(earthquake_model)
 
-
-
-#print(simple_example.get_cpds('C'))
-#print(simple_example.get_cpds('C').values[1][0][1]) #variable, evidence1, evidence
-
 #enc1_indicator_clauses()
 
-#print (df.indicator_index)
+# print the nodes in a Bayesian network
 #print(simple_example.nodes)
 
-infer = VariableElimination(simple_example)
-print((infer.query(['C'], evidence={'A':1, 'B':0})['C']))
+# get a node's evidence
+#print(simple_example.get_cpds('A').get_evidence())
 
-#print(infer.query(variables = [('A', 0)]))
-#print(infer.query(['C'], evidence = {'A', 'B'} )['C'])
+# get a parameter value
+#infer = VariableElimination(simple_example)
+#print((infer.query(['C'], evidence={'A':1, 'B':0})['C']))
