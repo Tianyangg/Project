@@ -8,10 +8,11 @@ from Bayesian_V1 import define_CNF as df_CNF
 from Bayesian_V1 import enc1_simplified_def_variables as df_simplify
 from Bayesian_V1 import en1_simplified_def_CNF as df_CNF_simplify
 from Bayesian_V1 import  write_cnf as writefile
+from Bayesian_V1 import enc1_simplified_2 as enc1_sim2
 
 from pgmpy.readwrite import BIFReader
 # read a file?
-reader = BIFReader('/Users/tianyangsun/Documents/Project/Project/bifs/asia.bif')
+reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/asia.bif')
 earthquake_model = reader.get_model()
 
 
@@ -103,9 +104,18 @@ def enc1_simplified(bn):
 
     writefile.enc1_write_no_weight_simplified(df_CNF_simplify.write_file)
 
+
+
+def enc1_simplified_2(bn):
+    enc1_sim2.generate_vars(bn)
+    print(enc1_sim2.variable_dictionary)
+    print(len(enc1_sim2.variable_dictionary))
+    print(enc1_sim2.parameter_weights)
+    print("encoding1 improved")
+
 #encode(simple_example)
 #enc1_simplified(earthquake_model)
-
+enc1_simplified_2(earthquake_model)
 #enc1_indicator_clauses()
 
 # print the nodes in a Bayesian network
@@ -116,4 +126,8 @@ def enc1_simplified(bn):
 
 # get a parameter value
 #infer = VariableElimination(simple_example)
-#print((infer.query(['C'], evidence={'A':1, 'B':0})['C']))
+
+#result = infer.query(['B'], evidence={'A':1})['B']
+#result = infer.query(['C'], evidence = {'A':1, 'B':0})['C']
+#print(result.values[0])
+#print(result)

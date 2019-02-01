@@ -5,6 +5,7 @@ import copy
 list1 = [[1,2]]#, [5,6,7,8]] #, [9,10,11,12,13,14]]
 list2 = [[1,2], [5,6,7]] #, [9,10,11,12,13,14]]
 list3 = [[1,2], [5,6], [9,10], [3,4, 8]]
+list4 = [['A','B','C'], [2,3,2]]
 #result = []
 #result.clear()
 
@@ -46,9 +47,38 @@ def zipper(l):
 def tuple_to_string(tuple):
     temp1 = tuple[0] # that's the name::str??
     temp2 = tuple[1] # that's the number :: integer?
-    return temp1+str(temp2)
+    return [(temp1, temp2)]
 
 def list_tuple_to_str(l):
     return [tuple_to_string(x) for x in l]
 
 #print(tuple_to_string(("test", 123)))
+
+def prev_tuple_to_string(tuple):
+    temp1 = tuple[0] # that's the name::str??
+    temp2 = tuple[1] # that's the number :: integer?
+    return temp1+str(temp2)
+
+
+def generate_evrow(evidence, evidence_card):
+    list = []
+    list.clear()
+    ctr = 0
+    for ev in evidence:
+        list1 = []
+        index = 0
+        for i in range (0, evidence_card[ctr]):
+            list1.append((ev, index))
+            #list1.append(str(ev)+str(index))
+            index += 1
+        list.append(list1)
+        ctr += 1
+    return list
+
+def namer(list):
+    name = [j[0]+str(j[1]) for j in list]
+    for i in name:
+        names = ''.join(name)
+    return names
+
+

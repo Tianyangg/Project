@@ -12,6 +12,7 @@ parameter_weights = {
     'parameter_header': 0
 }
 
+parameter_triple = []
 # this gives  the combinations of letters and numbers
 def mixture(list):
     result = []
@@ -42,7 +43,7 @@ def generate_vars(bn):
     for i in bn.nodes:
         card = bn.get_cardinality(i)
         indicator_index.append((i, card))  # index_variable[i] stores the cardinality of the i_^th node: e.g [('A', 2), ('B', 3)...]
-
+        thiscpd = bn.get_cpds(i)
         # define indicator variables
 
         if card == 2:
@@ -57,36 +58,29 @@ def generate_vars(bn):
                 if temp_name not in variable_dictionary:
                     variable_dictionary[temp_name] = -1 * max(variable_dictionary.values())
 
-                # define parameter variables
-                for j in range(0, bn.get_cardinality(i)):
-                    #parameter_variable_n.append('theta_' + i + str(j))
-                    #parameter_variable_v.append(False)
-                    #parameter_to_value.append(("", -100))
-                    st = (i, j, [])
-                    #parameter_triple.append(st)
+                # define parameter variables:
+                temp_name = 'theta_' + i + '0'
+                if temp_name not in variable_dictionary:
+                    variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
+                if temp_name not in parameter_weights:
+                    # fetch weights from bn
+                    infer = VariableElimination(bn)
+                    query_weight = infer.query([i], evidence={})[i]
+                    temp_weight = query_weight.values[0]
+                    parameter_weights[temp_name] = temp_weight
 
-                    # define values in the variable dictionary
-                    temp_name = 'theta_' + i + str(j)
+                temp_name = 'theta_' + i + '1'
+                if temp_name not in variable_dictionary:
+                    variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
 
-                    # add to variable dictionary
-                    if temp_name not in variable_dictionary:
-                        variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
-                        
-                        # fetch weights from bn
-                        infer = VariableElimination(bn)
-                        temp_weight = infer.query([i], evidence={})[i]
-                        parameter_weights[temp_name] = temp_weight
-
-                    # add the weight to parameter weight
-
-               # parameter_index.append(('theta' + i, bn.get_cardinality(i)))
-
+                if temp_name not in parameter_weights:
+                    temp_weight = query_weight.values[1]
+                    parameter_weights[temp_name] = temp_weight
 
 
 
             # case 2 with evidence
             else:
-                print("need to generate lambdas")
                 # define indicator variables of Node i
 
                 temp_name = 'lambda_' + i + '0'
@@ -99,8 +93,84 @@ def generate_vars(bn):
                 if temp_name not in variable_dictionary:
                     variable_dictionary[temp_name] = -1 * max(variable_dictionary.values())
 
-                evidence_list = bn.get_cpds(i).get_evidence()
+               # define parameter variables
+                ev_cardinality = []
+                ev_cardinality.clear()
+                # get cardinality
+                for m in thiscpd.get_evidence():  # [A,B]
+                    ev_cardinality.append(bn.get_cardinality(m))
+
+                for m in range(0, bn.get_cardinality(i)):  # i_m
+                    # returns evidence tuples [[(A,0), (B,0)] [(A,0), (B1)]...]
+                    tablerows = mixture(generate_evrow(thiscpd.get_evidence(), ev_cardinality))
+                    ctr = 0
+                    for j in tablerows:
+                        # j is a list of tuples
+                        # define the name of tuples  # define values in the variable dictionary
+                        temp_name = 'theta_' + i + str(m) + '|' + parameter_generation.namer(j)  # append theta_i_m|namer e.g: theta_C0|B0A0
+                        st = (i, m, j)
+                        parameter_triple.append(st)
+                        # fetch result from CPT
+                        # fetch weights from bn
+                        infer = VariableElimination(bn)
+                        print(str(i) + "with evidence" + str(evidence_dic(j)))
+                        query_weight = infer.query([i], evidence = evidence_dic(j))[i]
+                        temp_weight = query_weight.values[m]
+
+                        # OMIT the theta if it == 1
+                        if temp_weight != 1 and temp_weight != 0:
+                            if temp_name not in variable_dictionary:
+                                variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
+                            parameter_weights[temp_name] = temp_weight
+
+        else:
+            for j in range(0, card):  # example: get node A's cardinality = 3
+                # define indicator variables:
+                temp_name = 'lambda_' + i + str(j)
+
+                if temp_name not in variable_dictionary:
+                    variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
+
+            # define parameter variables:
+            ev_cardinality = []
+            ev_cardinality.clear()
+            # get cardinality
+            for m in thiscpd.get_evidence():  # [A,B]
+                ev_cardinality.append(bn.get_cardinality(m))
+
+            for m in range(0, bn.get_cardinality(i)):  # i_m
+                # returns evidence tuples [[(A,0), (B,0)] [(A,0), (B1)]...]
+                tablerows = mixture(generate_evrow(thiscpd.get_evidence(), ev_cardinality))
+                ctr = 0
+                for j in tablerows:
+                    # j is a list of tuples
+                    # define the name of tuples  # define values in the variable dictionary
+                    temp_name = 'theta_' + i + str(m) + '|' + parameter_generation.namer(
+                        j)  # append theta_i_m|namer e.g: theta_C0|B0A0
+                    st = (i, m, j)
+                    parameter_triple.append(st)
+
+                    # fetch result from CPT
+                    # fetch weights from bn
+
+                    infer = VariableElimination(bn)
+                    print(str(i) + "with evidence" + str(evidence_dic(j)))
+                    query_weight = infer.query([i], evidence=evidence_dic(j))[i]
+                    temp_weight = query_weight.values[m]
+
+                    # omit the clause if theta .. = 1
+                    if temp_weight != 1 and temp_weight != 0:
+                        if temp_name not in variable_dictionary:
+                            variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
+                        parameter_weights[temp_name] = temp_weight
 
 
+def evidence_dic(tuples):
+    ev_dic = {}
+    for i in tuples:
+        ev_dic[i[0]] = i[1]
+    return ev_dic
 
-        thiscpd = bn.get_cpds(i)
+def parameter_vars_withevidence():
+
+    print("test")
