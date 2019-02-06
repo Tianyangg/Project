@@ -7,12 +7,16 @@ from Bayesian_V1 import define_variables as df
 from Bayesian_V1 import define_CNF as df_CNF
 from Bayesian_V1 import enc1_simplified_def_variables as df_simplify
 from Bayesian_V1 import en1_simplified_def_CNF as df_CNF_simplify
-from Bayesian_V1 import  write_cnf as writefile
+from Bayesian_V1 import write_cnf as writefile
 from Bayesian_V1 import enc1_simplified_2 as enc1_sim2
+from Bayesian_V1 import enc1_simplified2_define_CNF as enc1_sim2_cnf
+from Bayesian_V1 import enc2_simplified2
+from Bayesian_V1 import enc2_simplified2_define_CNF
+
 
 from pgmpy.readwrite import BIFReader
 # read a file?
-reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/asia.bif')
+reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/survey.bif')
 earthquake_model = reader.get_model()
 
 
@@ -108,14 +112,33 @@ def enc1_simplified(bn):
 
 def enc1_simplified_2(bn):
     enc1_sim2.generate_vars(bn)
+
+    enc1_sim2_cnf.enc1_indicator_clauses(bn)
+    enc1_sim2_cnf.enc1_parameter_clauses(bn)
+    enc1_sim2_cnf.write_clauses()
+    writefile.enc1_write_no_weight_simplified(enc1_sim2_cnf.write_file, enc1_sim2.variable_dictionary)
+
     print(enc1_sim2.variable_dictionary)
     print(len(enc1_sim2.variable_dictionary))
     print(enc1_sim2.parameter_weights)
     print("encoding1 improved")
 
+
+def enc2_simplified_2(bn):
+    enc2_simplified2.generate_vars(bn)
+
+    enc2_simplified2_define_CNF.enc2_indicator_clauses(bn)
+    enc2_simplified2_define_CNF.enc2_parameter_clauses(bn)
+    enc2_simplified2_define_CNF.write_clauses()
+    writefile.enc1_write_no_weight_simplified(enc2_simplified2_define_CNF.write_file, enc2_simplified2.variable_dictionary)
+    print(enc2_simplified2.variable_dictionary)
 #encode(simple_example)
 #enc1_simplified(earthquake_model)
-enc1_simplified_2(earthquake_model)
+
+enc2_simplified_2(earthquake_model)
+
+#print(enc1_sim2.parameter_triple)
+#print(list(locate(enc1_sim2.parameter_triple, lambda x: (x[0] == 'tub' and x[1] == 0))))
 #enc1_indicator_clauses()
 
 # print the nodes in a Bayesian network
@@ -125,9 +148,12 @@ enc1_simplified_2(earthquake_model)
 #print(simple_example.get_cpds('A').get_evidence())
 
 # get a parameter value
-#infer = VariableElimination(simple_example)
 
-#result = infer.query(['B'], evidence={'A':1})['B']
+#infer = VariableElimination(earthquake_model)
+#result = infer.query(['hepatotoxic'], evidence={})['hepatotoxic']
 #result = infer.query(['C'], evidence = {'A':1, 'B':0})['C']
 #print(result.values[0])
 #print(result)
+#evidence = simple_example.get_cpds('C').get_evidence()
+#print(evidence)
+#print(simple_example.get_cardinality('C'))

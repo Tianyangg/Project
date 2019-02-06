@@ -17,6 +17,7 @@ def chunks(l, n):
         yield l[i:i + n]
 
 def zipper(l):
+    print(l)
     result = []
     if len(l) == 1:
         # turn [1,2,3,4] into [[1][2][3][4]]

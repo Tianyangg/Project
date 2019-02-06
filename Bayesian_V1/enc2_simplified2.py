@@ -49,7 +49,7 @@ def generate_vars(bn):
         print(thiscpd)
         # define indicator variables
 
-        if card == 2:
+        if card == 0:
             # case 1 without evidence:
             if not bn.get_cpds(i).get_evidence(): # list is empty
                 # define indicator variables
