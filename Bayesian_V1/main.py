@@ -16,7 +16,7 @@ from Bayesian_V1 import enc2_simplified2_define_CNF
 
 from pgmpy.readwrite import BIFReader
 # read a file?
-reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/survey.bif')
+reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/earthquake.bif')
 earthquake_model = reader.get_model()
 
 
@@ -42,9 +42,9 @@ cpd_B = TabularCPD(variable = 'B', variable_card = 2,
                    evidence_card = [2])
 
 cpd_C = TabularCPD(variable = 'C', variable_card = 3,
-                   values = [[0.1, 0.01, 0.05 , 0.5],
-                             [0.2, 0.09, 0.5, 0],
-                             [0.7, 0.9, 0.45, 0.5]],
+                   values = [[0.7, 0.4, 1/3 , 0.2],
+                             [0.0, 0.3, 1/3, 0.3],
+                             [0.3, 0.3, 1/3, 0.5]],
                    evidence = ['A', 'B'],
                    evidence_card =[2, 2])
 
@@ -135,7 +135,9 @@ def enc2_simplified_2(bn):
 #encode(simple_example)
 #enc1_simplified(earthquake_model)
 
-enc2_simplified_2(earthquake_model)
+#enc2_simplified_2(earthquake_model)
+
+print(simple_example.local_independencies('B'))
 
 #print(enc1_sim2.parameter_triple)
 #print(list(locate(enc1_sim2.parameter_triple, lambda x: (x[0] == 'tub' and x[1] == 0))))
@@ -157,3 +159,15 @@ enc2_simplified_2(earthquake_model)
 #evidence = simple_example.get_cpds('C').get_evidence()
 #print(evidence)
 #print(simple_example.get_cardinality('C'))
+
+list1 = [('var', 1,[('Ev',1), ('Ev', 2)], 0.04),
+         ('var', 2, [('Ev', 1), ('Ev', 2)], 0.4),
+         ('var', 1, [('Ev', 1), ('Ev', 3)], 0.04),
+         ('var', 2, [('Ev', 0), ('Ev', 2)], 0.4)]
+list1.sort(key = lambda x: x[3])
+counter = 0
+while counter < len(list1):
+    list2 = [x for x in list1 if x[3] == list1[counter][3]]
+    counter = counter + len(list2)
+    print(list2)
+    #print(list1)
