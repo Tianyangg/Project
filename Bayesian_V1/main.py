@@ -12,7 +12,7 @@ from Bayesian_V1 import enc1_simplified_2 as enc1_sim2
 from Bayesian_V1 import enc1_simplified2_define_CNF as enc1_sim2_cnf
 from Bayesian_V1 import enc2_simplified2
 from Bayesian_V1 import enc2_simplified2_define_CNF
-
+from Bayesian_V1 import enc3
 
 from pgmpy.readwrite import BIFReader
 # read a file?
@@ -132,12 +132,12 @@ def enc2_simplified_2(bn):
     enc2_simplified2_define_CNF.write_clauses()
     writefile.enc1_write_no_weight_simplified(enc2_simplified2_define_CNF.write_file, enc2_simplified2.variable_dictionary)
     print(enc2_simplified2.variable_dictionary)
+
 #encode(simple_example)
 #enc1_simplified(earthquake_model)
 
 #enc2_simplified_2(earthquake_model)
 
-print(simple_example.local_independencies('B'))
 
 #print(enc1_sim2.parameter_triple)
 #print(list(locate(enc1_sim2.parameter_triple, lambda x: (x[0] == 'tub' and x[1] == 0))))
@@ -164,10 +164,4 @@ list1 = [('var', 1,[('Ev',1), ('Ev', 2)], 0.04),
          ('var', 2, [('Ev', 1), ('Ev', 2)], 0.4),
          ('var', 1, [('Ev', 1), ('Ev', 3)], 0.04),
          ('var', 2, [('Ev', 0), ('Ev', 2)], 0.4)]
-list1.sort(key = lambda x: x[3])
-counter = 0
-while counter < len(list1):
-    list2 = [x for x in list1 if x[3] == list1[counter][3]]
-    counter = counter + len(list2)
-    print(list2)
-    #print(list1)
+enc3.generate_original_cpts(simple_example)
