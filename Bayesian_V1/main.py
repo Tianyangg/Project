@@ -16,7 +16,7 @@ from Bayesian_V1 import enc3
 
 from pgmpy.readwrite import BIFReader
 # read a file?
-reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/earthquake.bif')
+reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/sachs.bif')
 earthquake_model = reader.get_model()
 
 
@@ -125,6 +125,7 @@ def enc1_simplified_2(bn):
 
 
 def enc2_simplified_2(bn):
+
     enc2_simplified2.generate_vars(bn)
 
     enc2_simplified2_define_CNF.enc2_indicator_clauses(bn)

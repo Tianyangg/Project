@@ -38,6 +38,49 @@ def generate_evrow(evidence, evidence_card):
         ctr += 1
     return list
 
+# these gives the same encoding for indicator variables:
+def enc3_indicator_encoding(bn):
+    clauses = []
+    for i in bn.nodes:
+        print('node'+i)
+        card = bn.get_cardinality(i)
+        indicator_index.append((i, card))  # index_variable[i] stores the cardinality of the i_^th node: e.g [('A', 2), ('B', 3)...]
+        thiscpd = bn.get_cpds(i)
+        print(thiscpd)
+        # define indicator variable
+
+        for j in range(0, card):  # example: get node A's cardinality = 3
+            # define indicator variables:
+            temp_name = 'lambda_' + i + str(j)
+
+            if temp_name not in variable_dictionary:
+                variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
+
+    for i in bn.nodes:  # [A, B, C]
+        # get the cardinality of a node:
+        node_cardinality = bn.get_cardinality(i)
+        # case1: without evidence
+
+        # case2: with evidence
+        # print(enc1_sim2.parameter_triple)
+
+        # get evidence cardinality
+        if node_cardinality != 0:
+            in_clause = []
+            in_clause.clear()
+            for j in range(0, node_cardinality):
+                temp_name = 'lambda_' + i + str(j)
+                in_clause.append((1, variable_dictionary[temp_name]))
+
+            clauses.append(in_clause)
+
+            # -lambda_xi v -lambda_xj when i < j
+            for m in range(0, node_cardinality):
+                for n in range(m + 1, node_cardinality):
+                    clauses.append([(-1, variable_dictionary['lambda_' + i + str(m)]),
+                                    (-1, variable_dictionary['lambda_' + i + str(n)])])
+    return clauses
+
 # define the method for prime encoding
 # parameter: bayesian network
 # get the node and it's CPT's value then store the parameter value into following form:
@@ -135,7 +178,6 @@ def prime_encode(l):
             print('error when encoding prime')
 
     return clauses
-
 
 
 def generate_original_cpts(bn):
@@ -269,7 +311,8 @@ def generate_original_cpts(bn):
 
 def write_clauses(bn):
     write_file = []
-    clauses = generate_original_cpts(bn)
+    clauses = enc3_indicator_encoding(bn)
+    clauses = clauses + generate_original_cpts(bn)
     print("write cnf:")
     #indicator clauses
     for i in clauses:
