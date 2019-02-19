@@ -34,3 +34,16 @@ def enc1_write_no_weight_simplified(ll, var_dic):
         str1 = str1.join(" 0")
         f.write(str1+"\n")
     f.close()
+
+
+def enc3_write_no_weight_simplified(ll, var_dic):
+    f = open("enc3_temp.cnf", "w")
+    print(len(ll))
+    f.write("c This is the enc3 file generate by sty"+"\n")
+    f.write("p cnf "+ str(max(var_dic.values())) +" " + str(len(ll)) +"\n")
+    for i in ll:
+        # list1 = [1, 2, 3]
+        str1 = ''.join(str(e)+' ' for e in i)
+        str1 = str1.join(" 0")
+        f.write(str1+"\n")
+    f.close()

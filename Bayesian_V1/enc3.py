@@ -45,7 +45,6 @@ def generate_evrow(evidence, evidence_card):
 #         ('C', 2, [('B', 1), ('A', 2)], 0.4),
 # call the partition and do the encode
 def prime_encode(l):
-    print("prime encode")
     ctr = 0
     clauses = []
     while ctr < len(l):
@@ -135,13 +134,12 @@ def prime_encode(l):
         else:
             print('error when encoding prime')
 
-    print (clauses)
     return clauses
 
 
 
 def generate_original_cpts(bn):
-
+    clauses = []
     for i in bn.nodes:
         card = bn.get_cardinality(i)
         indicator_index.append((i, card))  # index_variable[i] stores the cardinality of the i_^th node: e.g [('A', 2), ('B', 3)...]
@@ -263,9 +261,22 @@ def generate_original_cpts(bn):
             ## now we have the old_cpt of node i
             #print(old_cpt)
             prime_list = par.old2prime(old_cpt)
-            prime_encode(prime_list)
+            clauses = clauses + prime_encode(prime_list)
+
+    return clauses
 
 
+
+def write_clauses(bn):
+    write_file = []
+    clauses = generate_original_cpts(bn)
+    print("write cnf:")
+    #indicator clauses
+    for i in clauses:
+        if i:
+            list1 = [j[1]*j[0] for j in i]
+            write_file.append(list1)
+    return write_file
 
 
 def evidence_dic(tuples):

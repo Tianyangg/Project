@@ -133,10 +133,14 @@ def enc2_simplified_2(bn):
     writefile.enc1_write_no_weight_simplified(enc2_simplified2_define_CNF.write_file, enc2_simplified2.variable_dictionary)
     print(enc2_simplified2.variable_dictionary)
 
+def enc3_aaa(bn):
+    wf = enc3.write_clauses(bn)
+    writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary)
+
 #encode(simple_example)
 #enc1_simplified(earthquake_model)
 
-#enc2_simplified_2(earthquake_model)
+enc2_simplified_2(earthquake_model)
 
 
 #print(enc1_sim2.parameter_triple)
@@ -164,4 +168,6 @@ list1 = [('var', 1,[('Ev',1), ('Ev', 2)], 0.04),
          ('var', 2, [('Ev', 1), ('Ev', 2)], 0.4),
          ('var', 1, [('Ev', 1), ('Ev', 3)], 0.04),
          ('var', 2, [('Ev', 0), ('Ev', 2)], 0.4)]
-enc3.generate_original_cpts(simple_example)
+
+enc3_aaa(earthquake_model)
+#print(enc3.generate_original_cpts(simple_example))
