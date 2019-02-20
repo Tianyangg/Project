@@ -17,7 +17,6 @@ def enc2_indicator_clauses(bn):
     ctr = 0 # control index in indicator_variable_n
     index = 0 # NOTE: explain this!!!!
     for i in bn.nodes:    # [A, B, C]
-        # get the cardinality of a node:
         node_cardinality = bn.get_cardinality(i)
         # case1: without evidence
 
