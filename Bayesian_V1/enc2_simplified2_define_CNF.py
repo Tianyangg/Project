@@ -51,6 +51,7 @@ def enc2_parameter_clauses(bn):
             # return the index with e,g('tub', 0, _) => result: [0, 1]
             triple_index = (locate(parameter_triple, lambda x1: (x1[0] == i and x1[1] == j)))
             triple_list = [parameter_triple[i] for i in triple_index]
+            print('tr', triple_list)
             if not triple_list:     # Case1: without evidence
                 temp_name = 'theta_' + i + str(j)
                 if df_v.parameter_weights[temp_name] != 0 and df_v.parameter_weights[temp_name] != 1:

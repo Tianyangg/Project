@@ -1,4 +1,5 @@
 from Bayesian_V1 import parameter_generation
+from Bayesian_V1 import fetch_result as fetch
 from pgmpy.inference import VariableElimination
 
 indicator_index = []
@@ -47,6 +48,11 @@ def generate_vars(bn):
         indicator_index.append((i, card))  # index_variable[i] stores the cardinality of the i_^th node: e.g [('A', 2), ('B', 3)...]
         thiscpd = bn.get_cpds(i)
         print(thiscpd)
+
+        #get rid of the query#
+        mycpt = fetch.mytable(bn.get_cpds(i))
+        print(mycpt)
+
         # define indicator variables
 
         if card == 0:
@@ -147,10 +153,13 @@ def generate_vars(bn):
                     temp_name = 'theta_' + i + str(m)
                     print(str(i) + "no evidence")
 
-                    infer = VariableElimination(bn)
+                    #infer = VariableElimination(bn)
 
-                    query_weight = infer.query([i], evidence={})[i]
-                    temp_weight = query_weight.values[m]
+                    #query_weight = infer.query([i], evidence={})[i]
+                    #temp_weight = query_weight.values[m]
+
+                    # the new version
+                    temp_weight = mycpt[m][3]
 
                     # omit the clause if theta .. = 1
                     if temp_weight == 1 or temp_weight == 0:
@@ -169,8 +178,23 @@ def generate_vars(bn):
                 # get cardinality
                 for m in thiscpd.get_evidence():  # [A,B]
                     ev_cardinality.append(bn.get_cardinality(m))
+                for x in mycpt:
+                    temp_name = 'theta_' + x[0] + str(x[1]) + '|' + tuples2str(x[2])  # append theta_i_m|namer e.g: theta_C0|B0A0
+                    print('tempname', temp_name)
+                    temp_weight = x[3]
 
+                    st = (x[0], x[1], x[2])
+                    parameter_triple.append(st)
 
+                    # omit the clause if theta .. = 1
+                    if temp_weight == 1 or temp_weight == 0:
+                        parameter_weights[temp_name] = temp_weight
+                        # only add to parameter weight for future reference
+                    if temp_weight != 1 and temp_weight != 0:
+                        if temp_name not in variable_dictionary:
+                            variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
+                        parameter_weights[temp_name] = temp_weight
+'''
                 for m in range(0, bn.get_cardinality(i)):  # i_m
                     # returns evidence tuples [[(A,0), (B,0)] [(A,0), (B1)]...]
                     print(thiscpd.get_evidence)
@@ -201,7 +225,14 @@ def generate_vars(bn):
                             if temp_name not in variable_dictionary:
                                 variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
                             parameter_weights[temp_name] = temp_weight
+'''
 
+
+def tuples2str(l):
+    s = ''
+    for i in l:
+        s = s+str(i[0])+str(i[1])
+    return s
 
 def evidence_dic(tuples):
     ev_dic = {}
@@ -209,6 +240,5 @@ def evidence_dic(tuples):
         ev_dic[i[0]] = i[1]
     return ev_dic
 
-def parameter_vars_withevidence():
-
-    print("test")
+list2 = [('A', 1), ('B', 3), ('C', 0)]
+print(tuples2str(list2))

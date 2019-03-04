@@ -97,12 +97,12 @@ def mytable(cpt):
     #labeled_rows = np.hstack((np.array(variable_array).T, cpt.get_values())).tolist()
     #print(labeled_rows)
 
-reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/cancer.bif')
-earthquake_model = reader.get_model()
+#reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/cancer.bif')
+#earthquake_model = reader.get_model()
 
 
 # associate the tables with the networks
-simple_example.add_cpds(cpd_A, cpd_B, cpd_C)
+#simple_example.add_cpds(cpd_A, cpd_B, cpd_C)
 #print(earthquake_model.get_cpds('E'))
-print(mytable(earthquake_model.get_cpds('Cancer')))
+#print(mytable(earthquake_model.get_cpds('Cancer')))
 #mytable(earthquake_model.get_cpds('Cancer'))
