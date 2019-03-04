@@ -104,5 +104,4 @@ earthquake_model = reader.get_model()
 # associate the tables with the networks
 simple_example.add_cpds(cpd_A, cpd_B, cpd_C)
 #print(earthquake_model.get_cpds('E'))
-print(mytable(earthquake_model.get_cpds('Cancer')))
 #mytable(earthquake_model.get_cpds('Cancer'))
