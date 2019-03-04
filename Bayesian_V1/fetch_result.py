@@ -91,5 +91,5 @@ def mytable(cpt):
     #print(labeled_rows)
 
 # associate the tables with the networks
-simple_example.add_cpds(cpd_A, cpd_B, cpd_C)
-mytable(simple_example.get_cpds('C'))
+#simple_example.add_cpds(cpd_A, cpd_B, cpd_C)
+#mytable(simple_example.get_cpds('C'))

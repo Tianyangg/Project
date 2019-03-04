@@ -3,6 +3,7 @@ from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import ExactInference
 from pgmpy.inference import VariableElimination
 from Bayesian_V1 import qm
+import itertools
 
 
 def parameter_to_number(l):
@@ -77,7 +78,16 @@ def binary_to_dec(binaries):
 def bins_to_decs(bins):
     decs = []
     for i in bins:
-        decs.append([int(j, 2) for j in i])
+        inside = []
+        for j in i:
+            if j != ' ':
+                inside.append(int(j, 2))
+            else:
+                inside.append(-1)
+
+            #inside.append()
+       # decs.append([int(j, 2) for j in i if j!= ' '])
+        decs.append(inside)
     return decs
 
 def call_qm(binaries):
@@ -87,10 +97,15 @@ def call_qm(binaries):
     sop = qm.qm(ones= binary_to_dec(append_binary(b[1])))
     length = b[0]
     # replace x with 0
-    mid_sop = [i.replace('', '0') for i in sop]
+    #mid_sop = [i.replace('', '0') for i in sop]
     ##### ATTENTION: this deal with the case when qm returns empty
-    new_sop = [i.replace('X', '0') for i in mid_sop]
-    return (new_sop, length)
+    #new_sop = [i.replace('X', '0') for i in mid_sop]
+
+    ## test
+    #mid_sop = [i.replace('', '') for i in sop]
+    ##### ATTENTION: this deal with the case when qm returns empty
+    new_sop = [i.replace('X', '0') for i in sop]
+    return (sop, length)
 
 def split_binary(s, length):
     #print([''.join([s[sum(n[:i]): sum(n[:i + 1])] for i in range(len(n))])])\
@@ -103,6 +118,32 @@ def split_binary(s, length):
 #
 # ('C', 1, [('B', 1), ('A', 2)], 0.04), ('C', 2, [('B', 1), ('A', 2)], 0.4),
 #  ##
+
+def replace_X(bins):
+    new_bins = []
+    '''for i in bins:
+        new_bins.append([len(j) for j in i])'''
+    for i in bins:
+        replace = []
+        for j in i:
+            if j.count('X') == len(j):
+                #replace = replace
+                replace.append(' ')
+                #j.replace('X', ' ')
+                # do nothing here
+            else:
+                #j_new = j.replace('X', '0')
+                # trace back to the original ones
+                replace.append(j.replace('X', 'X'))
+
+        new_bins.append(replace)
+
+        '''
+        for j in i:
+            new_bins = new_bins.append(len(j))
+            '''
+    return new_bins
+
 def partition(l):
 # input a list of cpt
 # sample return results:
@@ -123,7 +164,9 @@ def partition(l):
             prime_implicants = call_qm(par2num)
 
             temp = split_binary(prime_implicants[0], prime_implicants[1])
-            decs = bins_to_decs(temp)
+            withx = replace_X(temp)
+            nox = large_backtack(withx)
+            decs = bins_to_decs(nox)
 
             # get the parameter value:
             if list2:
@@ -176,31 +219,100 @@ def old2prime(l1):
     return result
 
 
+def large_backtack(l):
+    re = []
+    for i in l:
+        #number = [len(j) for j in i]
+        bt = backtrack(i)
+
+        #re = re + split_binary(bt, number)
+        re = re + bt
+    return re
+
+
+def backtrack(l):
+    # get rid of the xs that does not satisfied simplification
+    if len(l) == 1:
+        #print(l, l[0])
+        #print([r1 for r1 in bt_element(l[0])])
+        temp = bt_element(l[0])
+        if isinstance(temp, list):
+            return [r1 for r1 in temp]
+        else:
+            return [temp]
+    else:
+        tail = backtrack(l[1:])
+        bt_temp = bt_element(l[0])
+        if isinstance(bt_temp, list):
+            l2 = []
+            for i in bt_temp:
+                l1 = [[i]+ r2 if isinstance(r2, list) else [i]+[r2] for r2 in tail]
+                l2 = l2+l1
+            return l2
+        else:
+            #return [[bt_temp] + [r2] for r2 in tail]
+            return [[bt_temp] + r2 if isinstance(r2, list) else [bt_temp] + [r2] for r2 in tail]
+            #return [[r2]+temp if isinstance(bt_temp, list) else [bt_temp]+temp for r2 in bt_temp ]
 
 
 
-list1 = [('C', 1, [('B', 1), ('A', 2)], 0.04),
-         ('C', 2, [('B', 1), ('A', 2)], 0.4),
-         ('C', 1, [('B', 1), ('A', 3)], 0.04),
-         ('C', 2, [('B', 0), ('A', 2)], 0.4)]
+def bt_element(e):
+    length = len(e)
+    time = e.count('X')
+    #print(time)
 
-#list1.sort(key = lambda x: x[3])
-#while counter < len(list1):
-#    list2 = [x for x in list1 if x[3] == list1[counter][3]]
-#    counter = counter + len(list2)
-#    print(list2)
+    if time == 0:
+        return e
+    else:
+        # first get the first one
+        if length == 1:
+            if e == 'X':
+                return ['0']+['1']
+            else:
+                return e
+        if e[0] == 'X':
+            #return['0'+ bt_element(e[1:length]), '1'+bt_element(e[1:length])]
+            temp = bt_element(e[1:])
+            if isinstance(temp, list):
+                return ['0'+ r1  for r1 in temp] \
+                   + ['1'+r1  for r1 in temp]
+            else:
+                return ['0'+ temp ] \
+                   + ['1'+temp]
+            #return ['0'+ r1 if isinstance(temp, list) else '0'+ temp for r1 in temp] \
+            #       + ['1'+r1 if isinstance(temp, list) else '1'+ temp for r1 in temp]
+        else:
+            temp = bt_element(e[1:])
+            if isinstance(temp, list):
+                return [e[0]+ r1  for r1 in temp]
+            else:
+                return [e[0]+ temp ]
+            # return[e[0]+r1 if isinstance(temp, list) else e[0]+ temp for r1 in temp]
 
-#a = parameter_to_number(list1)
-#number_to_binary_list(a)
-#temp = number_to_binary_list(a)
-#b = call_qm(a) b n
-#print('b'+ str(b))
-#temp = split_binary(b[0], b[1])
-#print(bins_to_decs(temp))
-#print(append_binary(temp))
+
+
+list1 = [('C', 2, [('B', 2), ('A', 0)], 0.04),
+         ('C', 2, [('B', 2), ('A', 1)], 0.04),
+         ('C', 2, [('B', 2), ('A', 2)], 0.04),
+         ('C', 2, [('B', 2), ('A', 3)], 0.04)]
+
+list3 =  [('C', 2, [('B', 1), ('A', 2)], 0.4),
+         ('C', 2, [('B', 0), ('A', 2)], 0.4),
+          ('C', 2, [('B', 1), ('A', 1)], 0.4),
+          ('C', 2, [('B', 1), ('A', 0)], 0.4),
+          ('C', 0, [('B', 1), ('A', 0)], 0.4),
+          ('C', 4, [('B', 1), ('A', 0)], 0.4)]
 
 #print (qm.qm(ones= binary_to_dec(append_binary(temp))))
 
-#print(old2prime(list1))
-
 #print(qm.qm(ones = [0, 1]))
+(partition(list3))
+
+# test itertools
+#lst = list(map(list, itertools.product(['0', '1'], repeat=2)))
+#lst = list(itertools.product(['0','1'], repeat=3))
+#lst = [['before']+['this'+''.join(list(i))+'what']+['after'] for i in itertools.product(['0', '1'], repeat=2)]
+
+#print(bt_element('X10'))
+#print(backtrack(['010']))
+

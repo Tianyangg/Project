@@ -93,7 +93,6 @@ def prime_encode(l):
     clauses = []
     while ctr < len(l):
         prime_group = [x for x in l if x[3] == l[ctr][3]]
-        #print(prime_group)
         ctr = ctr + len(prime_group)
 
         ## get the value
@@ -104,19 +103,10 @@ def prime_encode(l):
                 # do not generate parameter variable
                 terms = []
                 for i in prime_group:
-                    indicator_name = 'lambda_'+i[0]+str(i[1])
                     term = []
-                    if indicator_name in variable_dictionary:
-                        term.append((-1, variable_dictionary[indicator_name]))
-                    else:
-                        # append
-                        indicator_value = max(variable_dictionary.values()) + 1
-                        term.append((-1, indicator_value))
-                        # add to dictionary
-                        variable_dictionary[indicator_name] = indicator_value
+                    if i[1] != -1:
+                        indicator_name = 'lambda_'+i[0]+str(i[1])
 
-                    for j in i[2]:
-                        indicator_name = 'lambda_' + j[0] + str(j[1])
                         if indicator_name in variable_dictionary:
                             term.append((-1, variable_dictionary[indicator_name]))
                         else:
@@ -125,55 +115,73 @@ def prime_encode(l):
                             term.append((-1, indicator_value))
                             # add to dictionary
                             variable_dictionary[indicator_name] = indicator_value
+
+                    for j in i[2]:
+                        if j[1] != -1:
+                            indicator_name = 'lambda_' + j[0] + str(j[1])
+                            if indicator_name in variable_dictionary:
+                                term.append((-1, variable_dictionary[indicator_name]))
+                            else:
+                                # append
+                                indicator_value = max(variable_dictionary.values()) + 1
+                                term.append((-1, indicator_value))
+                                # add to dictionary
+                                variable_dictionary[indicator_name] = indicator_value
 
                     terms.append(term)
                     clauses = clauses + terms
             else:
-            # encode the clause and the parameter variable
-                terms = []
-                for i in prime_group:
-                    indicator_name = 'lambda_' + i[0] + str(i[1])
-                    term = []
-                    if indicator_name in variable_dictionary:
-                        term.append((-1, variable_dictionary[indicator_name]))
+                if par_value != 1:
+                # encode the clause and the parameter variable
+                    terms = []
+                    for i in prime_group:
+                        # ADD HERE the if next line
+                        term = []
+                        if i[1] != -1:
+                            indicator_name = 'lambda_' + i[0] + str(i[1])
+                            #term = []
+                            if indicator_name in variable_dictionary:
+                                term.append((-1, variable_dictionary[indicator_name]))
+                            else:
+                                # append
+                                indicator_value = max(variable_dictionary.values()) + 1
+                                term.append((-1, indicator_value))
+                                # add to dictionary
+                                variable_dictionary[indicator_name] = indicator_value
+                        for j in i[2]:
+                            # ADD HERE THE IF NEXT LINE
+                            if j[1] != -1:
+                                indicator_name = 'lambda_' + j[0] + str(j[1])
+                                if indicator_name in variable_dictionary:
+                                    term.append((-1, variable_dictionary[indicator_name]))
+                                else:
+                                    # append
+                                    indicator_value = max(variable_dictionary.values()) + 1
+                                    term.append((-1, indicator_value))
+                                    # add to dictionary
+                                    variable_dictionary[indicator_name] = indicator_value
+
+                        terms.append(term)
+
+                    # generate a parameter value
+                    parameter_name = 'theta_'+str(len(parameter_weights))
+                    # add to weight dict
+                    if parameter_name not in parameter_weights:
+                        parameter_weights[parameter_name] = par_value
+                    # add to variable or fetch it
+                    if parameter_name in variable_dictionary:
+                        t = (1, variable_dictionary[parameter_name])
                     else:
                         # append
-                        indicator_value = max(variable_dictionary.values()) + 1
-                        term.append((-1, indicator_value))
+                        parameter_value = max(variable_dictionary.values()) + 1
+                        t = (1, parameter_value)
                         # add to dictionary
-                        variable_dictionary[indicator_name] = indicator_value
-                    for j in i[2]:
-                        indicator_name = 'lambda_' + j[0] + str(j[1])
-                        if indicator_name in variable_dictionary:
-                            term.append((-1, variable_dictionary[indicator_name]))
-                        else:
-                            # append
-                            indicator_value = max(variable_dictionary.values()) + 1
-                            term.append((-1, indicator_value))
-                            # add to dictionary
-                            variable_dictionary[indicator_name] = indicator_value
+                        variable_dictionary[parameter_name] = parameter_value
 
-                    terms.append(term)
-
-                # generate a parameter value
-                parameter_name = 'theta_'+str(len(parameter_weights))
-                # add to weight dict
-                if parameter_name not in parameter_weights:
-                    parameter_weights[parameter_name] = par_value
-                # add to variable or fetch it
-                if parameter_name in variable_dictionary:
-                    t = (1, variable_dictionary[parameter_name])
-                else:
-                    # append
-                    parameter_value = max(variable_dictionary.values()) + 1
-                    t = (1, parameter_value)
-                    # add to dictionary
-                    variable_dictionary[parameter_name] = parameter_value
-
-                # append the parameter at the end of each term
-                for cl in terms:
-                    cl.append(t)
-                    clauses.append(cl)
+                    # append the parameter at the end of each term
+                    for cl in terms:
+                        cl.append(t)
+                        clauses.append(cl)
 
         else:
             print('error when encoding prime')
@@ -192,6 +200,11 @@ def generate_original_cpts(bn):
 
         # the cpt before partition
         old_cpt = fetch.mytable(bn.get_cpds(i))
+
+        ## now we have the old_cpt of node i
+        #print(old_cpt)
+        prime_list = par.old2prime(old_cpt)
+        clauses = clauses + prime_encode(prime_list)
         '''
         old_cpt = []
         if bn.get_cpds(i).get_evidence():
@@ -220,13 +233,6 @@ def generate_original_cpts(bn):
                 old_cpt.append((i, m, [], temp_weight))
                 
         '''
-
-
-
-        ## now we have the old_cpt of node i
-        #print(old_cpt)
-        prime_list = par.old2prime(old_cpt)
-        clauses = clauses + prime_encode(prime_list)
 
     return clauses
 

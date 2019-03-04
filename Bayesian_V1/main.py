@@ -17,7 +17,7 @@ from Bayesian_V1 import enc3
 from pgmpy.readwrite import BIFReader
 
 # read a file?
-reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/Ratio_50/50-10-2.bif')
+reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/Ratio_50/50-10-10.bif')
 earthquake_model = reader.get_model()
 
 
@@ -138,7 +138,8 @@ def enc2_simplified_2(bn):
 def enc3_aaa(bn):
     wf = enc3.write_clauses(bn)
     writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary)
-
+    print(enc3.variable_dictionary)
+    print(enc3.parameter_weights)
 #encode(simple_example)
 #enc1_simplified(earthquake_model)
 
