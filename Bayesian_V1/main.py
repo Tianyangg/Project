@@ -156,12 +156,12 @@ def enc3_aaa(bn):
     wf = enc3.write_clauses(bn)
     writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary, bifname)
     stop = time()
-    print('Time usage enc2 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
+    print('Time usage enc3 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
 
 #encode(simple_example)
-#enc_baseline(earthquake_model)
+enc_baseline(earthquake_model)
 enc1_simplified_2(earthquake_model)
-#enc2_simplified_2(earthquake_model)
+enc2_simplified_2(earthquake_model)
 enc3_aaa(earthquake_model)
 
 

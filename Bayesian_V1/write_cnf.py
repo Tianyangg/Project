@@ -24,7 +24,7 @@ def write_no_weight(ll):
 
 def baseline_write_no_weight_simplified(ll, var_dic, name):
     print('writing baseline to file')
-    fname = '/Users/tianyangsun/Documents/Project/Github_repo/baseline_results'+name+'_baseline.cnf'
+    fname = '/Users/tianyangsun/Documents/Project/Github_repo/baseline_results/'+name+'_baseline.cnf'
     f = open(fname, "w")
     #print(len(ll))
     f.write("c This is the baseline generate by sty"+"\n")
@@ -38,7 +38,7 @@ def baseline_write_no_weight_simplified(ll, var_dic, name):
 
 def enc1_write_no_weight_simplified(ll, var_dic, name):
     print('writing enc1_simplified to file')
-    fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc1_results' + name + '_enc1.cnf'
+    fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc1_results/' + name + '_enc1.cnf'
     f = open(fname, "w")
     #print(len(ll))
     f.write("c This is the enc1_simplified file generate by sty"+"\n")
@@ -53,7 +53,7 @@ def enc1_write_no_weight_simplified(ll, var_dic, name):
 
 def enc2_write_no_weight_simplified(ll, var_dic, name):
     print('writing enc2 to file')
-    fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc2_results' + name + '_enc2.cnf'
+    fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc2_results/' + name + '_enc2.cnf'
     f = open(fname, "w")
     f.write("c This is the enc2 file generate by sty"+"\n")
     f.write("p cnf "+ str(max(var_dic.values())) +" " + str(len(ll)) +"\n")
@@ -67,7 +67,7 @@ def enc2_write_no_weight_simplified(ll, var_dic, name):
 
 def enc3_write_no_weight_simplified(ll, var_dic, name):
     print('writing enc3 to file')
-    fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc3_results' + name + '_enc3.cnf'
+    fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc3_results/' + name + '_enc3.cnf'
     f = open(fname, "w")
     #print(len(ll))
     f.write("c This is the enc3 file generate by sty"+"\n")
