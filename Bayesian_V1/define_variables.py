@@ -1,4 +1,5 @@
 from Bayesian_V1 import parameter_generation
+from Bayesian_V1 import fetch_result as fetch
 
 indicator_variable_n = [] # the list for Variable parameter names
 indicator_variable_v = [] # the cor values with same index as name
@@ -60,6 +61,7 @@ def generate_variable(bn):
                 variable_dictionary[temp_name] = len(variable_dictionary)
 
         thiscpd = bn.get_cpds(i)
+        mycpt = fetch.mytable(bn.get_cpds(i))
 
 
         # define parameter Variables
@@ -76,7 +78,7 @@ def generate_variable(bn):
 
                 # define values in the variable dictionary
                 temp_name = 'theta_' + i + str(j)
-
+#
                 if temp_name not in variable_dictionary:
                     variable_dictionary[temp_name] = len(variable_dictionary)
 
@@ -90,6 +92,21 @@ def generate_variable(bn):
             for m in thiscpd.get_evidence():  # [A,B]
                 ev_cardinality.append(bn.get_cardinality(m))
 
+            for x in mycpt:
+                temp_name = 'theta_' + x[0] + str(x[1]) + '|' + tuples2str(
+                    x[2])  # append theta_i_m|namer e.g: theta_C0|B0A0
+                #print('tempname', temp_name)
+                temp_weight = x[3]
+
+                st = (x[0], x[1], x[2])
+                parameter_triple.append(st)
+
+
+                if temp_name not in variable_dictionary:
+                    variable_dictionary[temp_name] = len(variable_dictionary)
+
+
+            '''
             for m in range(0, bn.get_cardinality(i)):  # i_m
                 # this gives all the rows of the cpds
                 tablerows = mixture(generate_evrow(thiscpd.get_evidence(), ev_cardinality))
@@ -112,12 +129,21 @@ def generate_variable(bn):
                     if temp_name not in variable_dictionary:
                         variable_dictionary[temp_name] = len(variable_dictionary)
 
+            '''
 
-    print("parameter")
-    print(parameter_triple)
+def tuples2str(l):
+    s = ''
+    for i in l:
+        s = s + str(i[0]) + str(i[1])
+    return s
 
-    print("indicator")
-    print(indicator_tuple)
+'''
+print("parameter")
+print(parameter_triple)
 
-    print("dictionary")
-    print(variable_dictionary)
+print("indicator")
+print(indicator_tuple)
+
+print("dictionary")
+print(variable_dictionary)
+'''

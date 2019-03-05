@@ -46,7 +46,7 @@ def generate_vars(bn):
         card = bn.get_cardinality(i)
         indicator_index.append((i, card))  # index_variable[i] stores the cardinality of the i_^th node: e.g [('A', 2), ('B', 3)...]
         thiscpd = bn.get_cpds(i)
-        print(thiscpd)
+        #print(thiscpd)
 
         # get rid of the query#
         mycpt = fetch.mytable(bn.get_cpds(i))
@@ -68,6 +68,7 @@ def generate_vars(bn):
 
                 # define parameter variables:
                 temp_name = 'theta_' + i + '0'
+                temp_weight = mycpt[0][3]
                 if temp_name not in variable_dictionary:
                     variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
                 if temp_name not in parameter_weights:
@@ -76,19 +77,17 @@ def generate_vars(bn):
                     #query_weight = infer.query([i], evidence={})[i]
                     #temp_weight = query_weight.values[0]
                     parameter_weights[temp_name] = temp_weight
-                    temp_weight = mycpt[0][3]
-                    parameter_weights[temp_name] = temp_weight
 
                 temp_name = 'theta_' + i + '1'
+                temp_weight = mycpt[1][3]
                 if temp_name not in variable_dictionary:
                     variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
 
                 if temp_name not in parameter_weights:
                     #infer = VariableElimination(bn)
                     #query_weight = infer.query([i], evidence={})[i]
-                    temp_weight = query_weight.values[1]
-
-                    temp_weight = mycpt[0][3]
+                    #temp_weight = query_weight.values[1]
+                    #temp_weight = mycpt[0][3]
                     parameter_weights[temp_name] = temp_weight
 
 
@@ -171,7 +170,7 @@ def generate_vars(bn):
 
                 for m in range(0, bn.get_cardinality(i)):  # i_m
                     temp_name = 'theta_' + i + str(m)
-                    print(str(i) + "no evidence")
+                    #print(str(i) + "no evidence")
                     temp_weight = mycpt[m][3]
 
                     #infer = VariableElimination(bn)

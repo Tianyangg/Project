@@ -141,11 +141,10 @@ def enc3_aaa(bn):
     #print(enc3.variable_dictionary)
     #print(enc3.parameter_weights)
 #encode(simple_example)
-encode(earthquake_model)
+#encode(earthquake_model)
 #enc1_simplified_2(earthquake_model)
-
 #enc2_simplified_2(earthquake_model)
-
+#enc3_aaa(earthquake_model)
 
 #print(enc1_sim2.parameter_triple)
 #print(list(locate(enc1_sim2.parameter_triple, lambda x: (x[0] == 'tub' and x[1] == 0))))
@@ -155,7 +154,7 @@ encode(earthquake_model)
 #print(simple_example.nodes)
 
 # get a node's evidence
-#print(simple_example.get_cpds('A').get_evidence())
+print(simple_example.get_cpds('A'))
 
 # get a parameter value
 

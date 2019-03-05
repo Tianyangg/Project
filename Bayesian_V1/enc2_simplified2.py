@@ -151,7 +151,7 @@ def generate_vars(bn):
 
                 for m in range(0, bn.get_cardinality(i)):  # i_m
                     temp_name = 'theta_' + i + str(m)
-                    print(str(i) + "no evidence")
+                    #print(str(i) + "no evidence")
 
                     #infer = VariableElimination(bn)
 

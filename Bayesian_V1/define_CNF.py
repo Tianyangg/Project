@@ -66,16 +66,24 @@ def enc1_parameter_clauses():
     # a1 /\ c1 <=> theta_c1|a1
     # (-1, a1),(-1, c1), lambda c1|a1
 
-
+    print(df_v.parameter_triple)
     for i in df_v.parameter_triple:
         #look up indicator variables
         temp = []
         temp.clear()
+        print('i', i)
+        if i[2]:
+            temp.append("lambda_" + str(i[0])+str(i[1]))
+            print(temp)
+        '''
         for j in i[2]:
             #print(j)
+            temp.append("lambda_"+tuples2str(j))
             if j in df_v.indicator_tuple:
-                temp.append("lambda_"+parameter_generation.tuple_to_string(j))
-
+                print('j', j)
+                temp.append("lambda_"+tuples2str(j))
+                #temp.append("lambda_"+parameter_generation.tuple_to_string(j))
+        '''
 
         # case1 without evidence:
         if not temp:
@@ -93,10 +101,12 @@ def enc1_parameter_clauses():
 
         # case2 with evidence:
         else:
-            namer = []
-            namer.clear()
-            namer = ''.join(parameter_generation.list_tuple_to_str(i[2]))
+            #namer = []
+            #namer.clear()
+            #namer = ''.join(parameter_generation.list_tuple_to_str(i[2]))
             temp.append("lambda_"+str(i[0])+str(i[1]))
+            # new namer
+            namer = tuples2str(i[2])
             parameter_clause.append(["theta_"+str(i[0])+str(i[1])+"|"+namer, temp])
 
             # =>
@@ -160,7 +170,11 @@ def write_indicator_clause():
 
     print(write_file)
 
-
+def tuples2str(l):
+    s = ''
+    for i in l:
+        s = s + str(i[0]) + str(i[1])
+    return s
 
 enc1_parameter_clauses()
 
