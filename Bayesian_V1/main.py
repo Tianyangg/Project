@@ -13,6 +13,8 @@ from Bayesian_V1 import enc1_simplified2_define_CNF as enc1_sim2_cnf
 from Bayesian_V1 import enc2_simplified2
 from Bayesian_V1 import enc2_simplified2_define_CNF
 from Bayesian_V1 import enc3
+from Bayesian_V1 import baseline
+from Bayesian_V1 import baseline_define_CNF
 
 from pgmpy.readwrite import BIFReader
 
@@ -100,7 +102,9 @@ def encode(bn):
         print(df.indicator_variable_v)
 
 
-
+'''
+DO NOT USE THIS ONE!!!!
+'''
 def enc1_simplified(bn):
     df_simplify.generate_variable(bn)
     df_CNF_simplify.enc1_indicator_clauses(bn)
@@ -109,6 +113,16 @@ def enc1_simplified(bn):
 
     writefile.enc1_write_no_weight_simplified(df_CNF_simplify.write_file)
 
+def enc_baseline(bn):
+    baseline.generate_vars(bn)
+
+    baseline_define_CNF.enc1_indicator_clauses(bn)
+    baseline_define_CNF.enc1_parameter_clauses(bn)
+    baseline_define_CNF.write_clauses()
+    writefile.enc1_write_no_weight_simplified(baseline_define_CNF.write_file, baseline.variable_dictionary)
+
+
+    print("encoding1 improved")
 
 
 def enc1_simplified_2(bn):
@@ -119,10 +133,12 @@ def enc1_simplified_2(bn):
     enc1_sim2_cnf.write_clauses()
     writefile.enc1_write_no_weight_simplified(enc1_sim2_cnf.write_file, enc1_sim2.variable_dictionary)
 
+    '''
     print(enc1_sim2.variable_dictionary)
     print(len(enc1_sim2.variable_dictionary))
     print(enc1_sim2.parameter_weights)
     print("encoding1 improved")
+    '''
 
 
 def enc2_simplified_2(bn):
@@ -133,16 +149,17 @@ def enc2_simplified_2(bn):
     enc2_simplified2_define_CNF.enc2_parameter_clauses(bn)
     enc2_simplified2_define_CNF.write_clauses()
     writefile.enc1_write_no_weight_simplified(enc2_simplified2_define_CNF.write_file, enc2_simplified2.variable_dictionary)
-    print(enc2_simplified2.variable_dictionary)
+    #print(enc2_simplified2.variable_dictionary)
 
 def enc3_aaa(bn):
     wf = enc3.write_clauses(bn)
     writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary)
     #print(enc3.variable_dictionary)
     #print(enc3.parameter_weights)
+
 #encode(simple_example)
-#encode(earthquake_model)
-#enc1_simplified_2(earthquake_model)
+#enc_baseline(earthquake_model)
+enc1_simplified_2(earthquake_model)
 #enc2_simplified_2(earthquake_model)
 #enc3_aaa(earthquake_model)
 
@@ -154,7 +171,7 @@ def enc3_aaa(bn):
 #print(simple_example.nodes)
 
 # get a node's evidence
-print(simple_example.get_cpds('A'))
+
 
 # get a parameter value
 
