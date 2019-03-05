@@ -140,13 +140,3 @@ def generate_variable(bn):
                     if temp_name not in variable_dictionary:
                         variable_dictionary[temp_name] = max(variable_dictionary.values()) + 1
 
-
-    print("parameter")
-    print(parameter_triple)
-
-    print("indicator")
-    print(indicator_tuple)
-
-    print("var_dictionary")
-    print(variable_dictionary)
-    print(variable_dictionary[max(variable_dictionary)])

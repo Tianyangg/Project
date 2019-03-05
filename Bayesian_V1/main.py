@@ -15,13 +15,15 @@ from Bayesian_V1 import enc2_simplified2_define_CNF
 from Bayesian_V1 import enc3
 from Bayesian_V1 import baseline
 from Bayesian_V1 import baseline_define_CNF
-
 from pgmpy.readwrite import BIFReader
+from time import time
+from pathlib import Path
 
 # read a file?
-reader = BIFReader('/Users/tianyangsun/Documents/Project/Github_repo/bifs/sachs.bif')
+mypath = '/Users/tianyangsun/Documents/Project/Github_repo/Ratio_50/50-10-3.bif'
+bifname = Path(mypath).stem
+reader = BIFReader(mypath)
 earthquake_model = reader.get_model()
-
 
 debug = False
 # represent a simple bayesian network and store it as simple_example
@@ -53,9 +55,6 @@ cpd_C = TabularCPD(variable = 'C', variable_card = 3,
 
 # associate the tables with the networks
 simple_example.add_cpds(cpd_A, cpd_B, cpd_C)
-
-
-
 
 
 cancer_model = BayesianModel([('Pollution', 'Cancer'),
@@ -114,25 +113,24 @@ def enc1_simplified(bn):
     writefile.enc1_write_no_weight_simplified(df_CNF_simplify.write_file)
 
 def enc_baseline(bn):
+    start = time()
     baseline.generate_vars(bn)
-
     baseline_define_CNF.enc1_indicator_clauses(bn)
     baseline_define_CNF.enc1_parameter_clauses(bn)
     baseline_define_CNF.write_clauses()
-    writefile.enc1_write_no_weight_simplified(baseline_define_CNF.write_file, baseline.variable_dictionary)
-
-
-    print("encoding1 improved")
-
+    writefile.baseline_write_no_weight_simplified(baseline_define_CNF.write_file, baseline.variable_dictionary, bifname)
+    stop = time()
+    print('Time usage baseline encoding '+ bifname + ' '+ str(stop - start) + " 秒")
 
 def enc1_simplified_2(bn):
+    start = time()
     enc1_sim2.generate_vars(bn)
-
     enc1_sim2_cnf.enc1_indicator_clauses(bn)
     enc1_sim2_cnf.enc1_parameter_clauses(bn)
     enc1_sim2_cnf.write_clauses()
-    writefile.enc1_write_no_weight_simplified(enc1_sim2_cnf.write_file, enc1_sim2.variable_dictionary)
-
+    writefile.enc1_write_no_weight_simplified(enc1_sim2_cnf.write_file, enc1_sim2.variable_dictionary, bifname)
+    stop = time()
+    print('Time usage enc1 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
     '''
     print(enc1_sim2.variable_dictionary)
     print(len(enc1_sim2.variable_dictionary))
@@ -142,35 +140,29 @@ def enc1_simplified_2(bn):
 
 
 def enc2_simplified_2(bn):
-
+    start = time()
     enc2_simplified2.generate_vars(bn)
-
     enc2_simplified2_define_CNF.enc2_indicator_clauses(bn)
     enc2_simplified2_define_CNF.enc2_parameter_clauses(bn)
     enc2_simplified2_define_CNF.write_clauses()
-    writefile.enc1_write_no_weight_simplified(enc2_simplified2_define_CNF.write_file, enc2_simplified2.variable_dictionary)
+    writefile.enc2_write_no_weight_simplified(enc2_simplified2_define_CNF.write_file, enc2_simplified2.variable_dictionary, bifname)
+    stop = time()
+    print('Time usage enc2 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
     #print(enc2_simplified2.variable_dictionary)
 
+
 def enc3_aaa(bn):
+    start = time()
     wf = enc3.write_clauses(bn)
-    writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary)
-    #print(enc3.variable_dictionary)
-    #print(enc3.parameter_weights)
+    writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary, bifname)
+    stop = time()
+    print('Time usage enc2 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
 
 #encode(simple_example)
 #enc_baseline(earthquake_model)
 enc1_simplified_2(earthquake_model)
 #enc2_simplified_2(earthquake_model)
-#enc3_aaa(earthquake_model)
-
-#print(enc1_sim2.parameter_triple)
-#print(list(locate(enc1_sim2.parameter_triple, lambda x: (x[0] == 'tub' and x[1] == 0))))
-#enc1_indicator_clauses()
-
-# print the nodes in a Bayesian network
-#print(simple_example.nodes)
-
-# get a node's evidence
+enc3_aaa(earthquake_model)
 
 
 # get a parameter value
@@ -183,11 +175,6 @@ enc1_simplified_2(earthquake_model)
 #evidence = simple_example.get_cpds('C').get_evidence()
 #print(evidence)
 #print(simple_example.get_cardinality('C'))
-
-list1 = [('var', 1,[('Ev',1), ('Ev', 2)], 0.04),
-         ('var', 2, [('Ev', 1), ('Ev', 2)], 0.4),
-         ('var', 1, [('Ev', 1), ('Ev', 3)], 0.04),
-         ('var', 2, [('Ev', 0), ('Ev', 2)], 0.4)]
 
 #enc3_aaa(earthquake_model)
 #print(enc3.generate_original_cpts(simple_example))

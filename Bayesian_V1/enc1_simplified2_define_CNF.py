@@ -70,14 +70,12 @@ def enc1_parameter_clauses(bn):
                     parameter_clauses.append(cnf_clause)
                 #simplification
                 if df_v.parameter_weights[temp_name] == 0:
-                    print('0')
+                    #print('0')
                     # negation of all:
                     cnf_clause = [(-1, df_v.variable_dictionary['lambda_' + i + str(j)])]
                     parameter_clauses.append(cnf_clause)
 
 
-                if df_v.parameter_weights[temp_name] == 1:
-                    print('1')
 
 
 
@@ -111,7 +109,7 @@ def enc1_parameter_clauses(bn):
                             parameter_clauses.append(cnf_clause)
 
                     if df_v.parameter_weights[temp_name] == 0:
-                        print('0')
+                        #print('0')
                         # negation of all:
                         cnf_clause = [(-1, df_v.variable_dictionary[
                             'lambda_' + i + str(j)])]  # this stores one clause: [(-1, 1), (1, 2)] means -x1 v x2
@@ -121,8 +119,7 @@ def enc1_parameter_clauses(bn):
                         cnf_clause = cnf_clause + cnf_clause_add
                         parameter_clauses.append(cnf_clause)
 
-                    if df_v.parameter_weights[temp_name] == 1:
-                        print('1')
+
 
         # Cardinality == 2 and no evidence: skip this
 
@@ -135,7 +132,7 @@ def pretty_print_iclause():
     for i in indicator_clauses:
         for j in indicator_clauses_s:
             printing.append(list(zip(j, i)))
-    print(printing)
+    #print(printing)
 
 
 
@@ -169,7 +166,6 @@ def enc1_clauses_weight(bn):
 
 write_file = []
 def write_clauses():
-    print("write cnf:")
 
     #indicator clauses
     for i in indicator_clauses:
@@ -180,7 +176,5 @@ def write_clauses():
         if i:
             list1 = [j[1] * j[0] for j in i]
             write_file.append(list1)
-
-    print(write_file)
 
 

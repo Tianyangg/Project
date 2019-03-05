@@ -169,7 +169,7 @@ def enc1_clauses_weight(bn):
 
 write_file = []
 def write_clauses():
-    print("write cnf:")
+    #print("write cnf:")
 
     #indicator clauses
     for i in indicator_clauses:
@@ -181,6 +181,6 @@ def write_clauses():
             list1 = [j[1] * j[0] for j in i]
             write_file.append(list1)
 
-    print(write_file)
+    #print(write_file)
 
 

@@ -259,6 +259,3 @@ def evidence_dic(tuples):
         ev_dic[i[0]] = i[1]
     return ev_dic
 
-def parameter_vars_withevidence():
-
-    print("test")

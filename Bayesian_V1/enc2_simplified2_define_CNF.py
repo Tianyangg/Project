@@ -51,7 +51,7 @@ def enc2_parameter_clauses(bn):
             # return the index with e,g('tub', 0, _) => result: [0, 1]
             triple_index = (locate(parameter_triple, lambda x1: (x1[0] == i and x1[1] == j)))
             triple_list = [parameter_triple[i] for i in triple_index]
-            print('tr', triple_list)
+            #print('tr', triple_list)
             if not triple_list:     # Case1: without evidence
                 temp_name = 'theta_' + i + str(j)
                 if df_v.parameter_weights[temp_name] != 0 and df_v.parameter_weights[temp_name] != 1:
@@ -66,14 +66,13 @@ def enc2_parameter_clauses(bn):
 
                 #simplification
                 if df_v.parameter_weights[temp_name] == 0:
-                    print('0')
+                    #print('0')
                     # negation of all:
                     cnf_clause = [(-1, df_v.variable_dictionary['lambda_' + i + str(j)])]
                     parameter_clauses.append(cnf_clause)
 
 
-                if df_v.parameter_weights[temp_name] == 1:
-                    print('1')
+
 
 
 
@@ -102,7 +101,7 @@ def enc2_parameter_clauses(bn):
                         parameter_clauses.append(cnf_clause)
 
                     if df_v.parameter_weights[temp_name] == 0:
-                        print('0')
+                        #print('0')
                         # negation of all:
                         cnf_clause = [(-1, df_v.variable_dictionary[
                             'lambda_' + i + str(j)])]  # this stores one clause: [(-1, 1), (1, 2)] means -x1 v x2
@@ -112,8 +111,7 @@ def enc2_parameter_clauses(bn):
                         cnf_clause = cnf_clause + cnf_clause_add
                         parameter_clauses.append(cnf_clause)
 
-                    if df_v.parameter_weights[temp_name] == 1:
-                        print('1')
+
 
         # Cardinality == 2 and no evidence: skip this
 
@@ -126,13 +124,11 @@ def pretty_print_iclause():
     for i in indicator_clauses:
         for j in indicator_clauses_s:
             printing.append(list(zip(j, i)))
-    print(printing)
+    #print(printing)
 
 
 write_file = []
 def write_clauses():
-    print("write cnf:")
-
     #indicator clauses
     for i in indicator_clauses:
         if i:
@@ -143,6 +139,5 @@ def write_clauses():
             list1 = [j[1] * j[0] for j in i]
             write_file.append(list1)
 
-    print(write_file)
 
 

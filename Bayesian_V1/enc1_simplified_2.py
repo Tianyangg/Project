@@ -40,9 +40,9 @@ def generate_evrow(evidence, evidence_card):
 
 
 def generate_vars(bn):
-    print('define generate_var')
+    #print('define generate_var')
     for i in bn.nodes:
-        print('node'+i)
+        #print('node'+i)
         card = bn.get_cardinality(i)
         indicator_index.append((i, card))  # index_variable[i] stores the cardinality of the i_^th node: e.g [('A', 2), ('B', 3)...]
         thiscpd = bn.get_cpds(i)
@@ -50,7 +50,7 @@ def generate_vars(bn):
 
         # get rid of the query#
         mycpt = fetch.mytable(bn.get_cpds(i))
-        print(mycpt)
+        #print(mycpt)
         # define indicator variables
 
 
@@ -115,7 +115,6 @@ def generate_vars(bn):
 
                 for x in mycpt:
                     temp_name = 'theta_' + x[0] + str(x[1]) + '|' + tuples2str(x[2])  # append theta_i_m|namer e.g: theta_C0|B0A0
-                    print('tempname', temp_name)
                     temp_weight = x[3]
 
                     st = (x[0], x[1], x[2])
@@ -198,7 +197,7 @@ def generate_vars(bn):
 
                 for x in mycpt:
                     temp_name = 'theta_' + x[0] + str(x[1]) + '|' + tuples2str(x[2])  # append theta_i_m|namer e.g: theta_C0|B0A0
-                    print('tempname', temp_name)
+
                     temp_weight = x[3]
 
                     st = (x[0], x[1], x[2])
@@ -258,6 +257,3 @@ def evidence_dic(tuples):
         ev_dic[i[0]] = i[1]
     return ev_dic
 
-def parameter_vars_withevidence():
-
-    print("test")
