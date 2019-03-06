@@ -2,6 +2,7 @@ from Bayesian_V1 import parameter_generation
 from pgmpy.inference import VariableElimination
 from Bayesian_V1 import enc3_partitioncpt as par
 from Bayesian_V1 import fetch_result as fetch
+from time import time
 
 indicator_index = []
 
@@ -129,7 +130,9 @@ def prime_encode(l):
                                 variable_dictionary[indicator_name] = indicator_value
 
                     terms.append(term)
-                    clauses = clauses + terms
+                clauses = clauses + terms
+
+
             else:
                 if par_value != 1:
                 # encode the clause and the parameter variable
@@ -191,6 +194,7 @@ def prime_encode(l):
 
 def generate_original_cpts(bn):
     clauses = []
+    qmtime = 0
     for i in bn.nodes:
         card = bn.get_cardinality(i)
         indicator_index.append((i, card))  # index_variable[i] stores the cardinality of the i_^th node: e.g [('A', 2), ('B', 3)...]
@@ -204,8 +208,10 @@ def generate_original_cpts(bn):
         ## now we have the old_cpt of node i
         #print('old', old_cpt)
         #HERE
+        qmstart = time()
         prime_list = par.old2prime(old_cpt)
-
+        qmend = time()
+        qmtime = qmtime + (qmend - qmstart)
         clauses = clauses + prime_encode(prime_list)
 
         '''
@@ -236,6 +242,7 @@ def generate_original_cpts(bn):
                 old_cpt.append((i, m, [], temp_weight))
                 
         '''
+    print('Qm time:', str(qmtime) + ' 秒')
     return clauses
 
 
@@ -244,7 +251,7 @@ def write_clauses(bn):
     write_file = []
     clauses = enc3_indicator_encoding(bn)
     clauses = clauses + generate_original_cpts(bn)
-    print("write cnf:")
+    #print("write cnf:")
     #indicator clauses
     for i in clauses:
         if i:

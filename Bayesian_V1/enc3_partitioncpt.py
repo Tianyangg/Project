@@ -134,10 +134,31 @@ def replace_X(bins):
             else:
                 #j_new = j.replace('X', '0')
                 # trace back to the original ones
+
                 replace.append(j.replace('X', 'X'))
 
         new_bins.append(replace)
 
+    return new_bins
+
+
+def replace_Xtest(bins):
+    new_bins = []
+    '''for i in bins:
+        new_bins.append([len(j) for j in i])'''
+    for i in bins:
+        replace = []
+        for j in i:
+            if j.count('X') == len(j):
+                # replace = replace
+                replace.append(' ')
+                # j.replace('X', ' ')
+                # do nothing here
+            else:
+                # j_new = j.replace('X', '0')
+                # trace back to the original ones
+                replace.append(j.replace('X', '0'))
+        new_bins.append(replace)
     return new_bins
 
 def partition(l):
@@ -160,9 +181,13 @@ def partition(l):
             prime_implicants = call_qm(par2num)
 
             temp = split_binary(prime_implicants[0], prime_implicants[1])
+            ###HERE
             withx = replace_X(temp)
-            #print(withx)
+
             nox = large_backtack(withx)
+
+            ###HERE
+
             decs = bins_to_decs(nox)
 
             # get the parameter value:

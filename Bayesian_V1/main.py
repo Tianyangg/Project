@@ -19,11 +19,12 @@ from pgmpy.readwrite import BIFReader
 from time import time
 from pathlib import Path
 
-# read a file?
-mypath = '/Users/tianyangsun/Documents/Project/Github_repo/Ratio_50/50-10-3.bif'
+# read a file
+#mypath = '/Users/tianyangsun/Documents/Project/Github_repo/bifs/survey.bif'
+mypath = '/Users/tianyangsun/Documents/Project/Github_repo/Ratio_90/90-10-2.bif'
 bifname = Path(mypath).stem
 reader = BIFReader(mypath)
-earthquake_model = reader.get_model()
+model = reader.get_model()
 
 debug = False
 # represent a simple bayesian network and store it as simple_example
@@ -114,23 +115,38 @@ def enc1_simplified(bn):
 
 def enc_baseline(bn):
     start = time()
+
     baseline.generate_vars(bn)
     baseline_define_CNF.enc1_indicator_clauses(bn)
     baseline_define_CNF.enc1_parameter_clauses(bn)
     baseline_define_CNF.write_clauses()
-    writefile.baseline_write_no_weight_simplified(baseline_define_CNF.write_file, baseline.variable_dictionary, bifname)
+
     stop = time()
-    print('Time usage baseline encoding '+ bifname + ' '+ str(stop - start) + " 秒")
+    print('Time usage baseline encode only ' + bifname + ' ' + str(stop - start) + " 秒")
+
+    writefile.baseline_write_no_weight_simplified(baseline_define_CNF.write_file, baseline.variable_dictionary, bifname)
+
+    stop = time()
+    print('Time usage baseline bayes2cnf '+ bifname + ' '+ str(stop - start) + " 秒")
+    print('--------------------------')
 
 def enc1_simplified_2(bn):
     start = time()
+
     enc1_sim2.generate_vars(bn)
     enc1_sim2_cnf.enc1_indicator_clauses(bn)
     enc1_sim2_cnf.enc1_parameter_clauses(bn)
     enc1_sim2_cnf.write_clauses()
-    writefile.enc1_write_no_weight_simplified(enc1_sim2_cnf.write_file, enc1_sim2.variable_dictionary, bifname)
+
     stop = time()
-    print('Time usage enc1 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
+    print('Time usage enc1 encode ' + bifname + ' ' + str(stop - start) + " 秒")
+
+    writefile.enc1_write_no_weight_simplified(enc1_sim2_cnf.write_file, enc1_sim2.variable_dictionary, bifname)
+
+    stop = time()
+    print('Time usage enc1 bayes2cnf ' + bifname + ' ' + str(stop - start) + " 秒")
+    print('--------------------------')
+
     '''
     print(enc1_sim2.variable_dictionary)
     print(len(enc1_sim2.variable_dictionary))
@@ -141,28 +157,44 @@ def enc1_simplified_2(bn):
 
 def enc2_simplified_2(bn):
     start = time()
+
     enc2_simplified2.generate_vars(bn)
     enc2_simplified2_define_CNF.enc2_indicator_clauses(bn)
     enc2_simplified2_define_CNF.enc2_parameter_clauses(bn)
     enc2_simplified2_define_CNF.write_clauses()
+
+    stop = time()
+    print('Time usage enc2 encode only ' + bifname + ' ' + str(stop - start) + " 秒")
+
     writefile.enc2_write_no_weight_simplified(enc2_simplified2_define_CNF.write_file, enc2_simplified2.variable_dictionary, bifname)
     stop = time()
-    print('Time usage enc2 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
+
+    print('Time usage enc2 bayes2cnf ' + bifname + ' ' + str(stop - start) + " 秒")
+    print('--------------------------')
     #print(enc2_simplified2.variable_dictionary)
 
 
-def enc3_aaa(bn):
-    start = time()
-    wf = enc3.write_clauses(bn)
-    writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary, bifname)
-    stop = time()
-    print('Time usage enc3 encoding ' + bifname + ' ' + str(stop - start) + " 秒")
 
-#encode(simple_example)
-enc_baseline(earthquake_model)
-enc1_simplified_2(earthquake_model)
-enc2_simplified_2(earthquake_model)
-enc3_aaa(earthquake_model)
+def encode_3(bn):
+    start = time()
+
+    wf = enc3.write_clauses(bn)
+
+    stop = time()
+    print('Time usage enc3 encode only ' + bifname + ' ' + str(stop - start) + " 秒")
+
+    writefile.enc3_write_no_weight_simplified(wf, enc3.variable_dictionary, bifname)
+
+    stop = time()
+    print('Time usage enc3 bayes2cnf ' + bifname + ' ' + str(stop - start) + " 秒")
+    print('--------------------------')
+
+
+enc_baseline(model)
+enc1_simplified_2(model)
+enc2_simplified_2(model)
+encode_3(model)
+
 
 
 # get a parameter value

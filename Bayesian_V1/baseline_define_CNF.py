@@ -76,11 +76,6 @@ def enc1_parameter_clauses(bn):
                     parameter_clauses.append(cnf_clause)
 
 
-
-
-
-
-
             else:  # Case2: with evidence
                 for x in triple_list:
                     parameter_name = parameter_generation.namer(x[2])
@@ -110,6 +105,8 @@ def enc1_parameter_clauses(bn):
                             parameter_clauses.append(cnf_clause)
 
                     if df_v.parameter_weights[temp_name] == 0:
+                        pi_temp = []
+                        pi_temp.clear()
                         #print('0')
                         # negation of all:
                         cnf_clause = [(-1, df_v.variable_dictionary[

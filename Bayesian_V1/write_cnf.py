@@ -23,6 +23,7 @@ def write_no_weight(ll):
 #write_no_weight(df_c.write_file)
 
 def baseline_write_no_weight_simplified(ll, var_dic, name):
+    print('#vars: ' + str(max(var_dic.values())), '#clauses: ' + str(len(ll)))
     print('writing baseline to file')
     fname = '/Users/tianyangsun/Documents/Project/Github_repo/baseline_results/'+name+'_baseline.cnf'
     f = open(fname, "w")
@@ -37,6 +38,7 @@ def baseline_write_no_weight_simplified(ll, var_dic, name):
     f.close()
 
 def enc1_write_no_weight_simplified(ll, var_dic, name):
+    print('#vars: ' + str(max(var_dic.values())), '#clauses: ' + str(len(ll)))
     print('writing enc1_simplified to file')
     fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc1_results/' + name + '_enc1.cnf'
     f = open(fname, "w")
@@ -52,6 +54,7 @@ def enc1_write_no_weight_simplified(ll, var_dic, name):
 
 
 def enc2_write_no_weight_simplified(ll, var_dic, name):
+    print('#vars: ' + str(max(var_dic.values())), '#clauses: ' + str(len(ll)))
     print('writing enc2 to file')
     fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc2_results/' + name + '_enc2.cnf'
     f = open(fname, "w")
@@ -66,6 +69,7 @@ def enc2_write_no_weight_simplified(ll, var_dic, name):
 
 
 def enc3_write_no_weight_simplified(ll, var_dic, name):
+    print('#vars: ' + str(max(var_dic.values())), '#clauses: '+ str(len(ll)))
     print('writing enc3 to file')
     fname = '/Users/tianyangsun/Documents/Project/Github_repo/enc3_results/' + name + '_enc3.cnf'
     f = open(fname, "w")
